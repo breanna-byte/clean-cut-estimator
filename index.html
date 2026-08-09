@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Request a fast cleaning estimate from Clean & Cut Contracting LLC in Northern Colorado." />
+  <title>Clean & Cut Contracting | Instant Cleaning Estimate</title>
+  <style>
+    :root{--red:#b5121b;--dark:#171717;--muted:#666;--light:#f7f7f7;--line:#ddd;--white:#fff}
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--dark);background:var(--light);line-height:1.45}
+    header{background:linear-gradient(135deg,#111,#2a2a2a);color:white;padding:56px 20px 42px;border-bottom:5px solid var(--red)}
+    .wrap{max-width:980px;margin:auto}.eyebrow{letter-spacing:.13em;text-transform:uppercase;color:#ff7078;font-weight:700;font-size:.78rem}
+    h1{font-size:clamp(2rem,5vw,3.5rem);line-height:1.03;margin:.35rem 0 1rem}.lede{max-width:720px;font-size:1.08rem;color:#eee}
+    main{padding:30px 18px 60px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:24px;margin:0 auto 22px;box-shadow:0 8px 28px rgba(0,0,0,.06)}
+    h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.full{grid-column:1/-1}
+    label{display:block;font-weight:700;margin-bottom:6px}input,select,textarea{width:100%;padding:12px;border:1px solid #bbb;border-radius:9px;font:inherit;background:white}
+    input:focus,select:focus,textarea:focus{outline:3px solid rgba(181,18,27,.16);border-color:var(--red)}
+    .checkgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.check{display:flex;gap:9px;align-items:center;background:#fafafa;border:1px solid #e3e3e3;border-radius:9px;padding:10px}.check input{width:auto}
+    button{border:0;border-radius:10px;padding:13px 18px;font-weight:800;cursor:pointer;font-size:1rem}.primary{background:var(--red);color:white}.secondary{background:#eee;color:#111}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .estimate{background:#111;color:white;border-left:6px solid var(--red)}.price{font-size:2.2rem;font-weight:900;margin:.2rem 0}.small{font-size:.88rem;color:var(--muted)}.estimate .small{color:#ccc}
+    .photos{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}.photos img{width:110px;height:86px;object-fit:cover;border-radius:8px;border:1px solid #ccc}
+    .notice{background:#fff5f5;border:1px solid #ffc9cc;border-radius:10px;padding:12px}.hidden{display:none}footer{text-align:center;color:#666;padding:22px}
+    @media(max-width:700px){.grid,.checkgrid{grid-template-columns:1fr}.card{padding:18px}header{padding-top:42px}}
+  </style>
+</head>
+<body>
+<header><div class="wrap"><div class="eyebrow">Northern Colorado property care</div><h1>Clean & Cut Contracting LLC</h1><p class="lede">Get a fast preliminary estimate for residential, move-out, deep, recurring, and property-turn cleaning in Fort Collins, Loveland, and nearby communities.</p></div></header>
+<main class="wrap">
+  <form id="quoteForm">
+    <section class="card">
+      <h2>1. Tell us about the property</h2>
+      <div class="grid">
+        <div><label for="service">Service</label><select id="service"><option value="standard">Standard / one-time</option><option value="deep">Deep cleaning</option><option value="moveout">Move-out / move-in</option><option value="weekly">Weekly recurring</option><option value="biweekly">Biweekly recurring</option><option value="monthly">Monthly recurring</option></select></div>
+        <div><label for="sqft">Approx. square feet</label><input id="sqft" type="number" min="100" max="15000" value="1200" required /></div>
+        <div><label for="beds">Bedrooms</label><input id="beds" type="number" min="0" max="20" value="2" required /></div>
+        <div><label for="baths">Bathrooms</label><input id="baths" type="number" min="0" max="20" step="0.5" value="2" required /></div>
+        <div class="full"><label for="condition">Current condition</label><select id="condition"><option value="light">Light / already tidy</option><option value="normal" selected>Normal lived-in condition</option><option value="heavy">Heavy buildup, clutter, or extra attention</option></select></div>
+      </div>
+    </section>
+    <section class="card">
+      <h2>2. Add-ons</h2>
+      <div class="checkgrid">
+        <label class="check"><input type="checkbox" value="fridge" /> Inside refrigerator</label>
+        <label class="check"><input type="checkbox" value="oven" /> Inside oven</label>
+        <label class="check"><input type="checkbox" value="windows" /> Interior windows</label>
+        <label class="check"><input type="checkbox" value="baseboards" /> Detailed baseboards</label>
+        <label class="check"><input type="checkbox" value="pets" /> Heavy pet hair</label>
+      </div>
+    </section>
+    <section class="card">
+      <h2>3. Upload photos</h2>
+      <p class="small">Photos stay on your device in this free version. They help you organize the request, but are not sent anywhere automatically.</p>
+      <input id="photos" type="file" accept="image/*" multiple />
+      <div id="photoPreview" class="photos"></div>
+    </section>
+    <section class="card">
+      <h2>4. Contact details</h2>
+      <div class="grid">
+        <div><label for="name">Name</label><input id="name" required /></div>
+        <div><label for="phone">Phone</label><input id="phone" type="tel" required /></div>
+        <div><label for="email">Email</label><input id="email" type="email" /></div>
+        <div><label for="city">City</label><select id="city"><option>Fort Collins</option><option>Loveland</option><option>Windsor</option><option>Greeley</option><option>Wellington</option><option>Timnath</option><option>Other</option></select></div>
+        <div class="full"><label for="notes">Anything we should know?</label><textarea id="notes" rows="4" placeholder="Parking, pets, deadline, access instructions, problem areas, etc."></textarea></div>
+      </div>
+      <div class="actions"><button class="primary" type="submit">Calculate estimate</button><button class="secondary" type="button" id="resetBtn">Reset</button></div>
+    </section>
+  </form>
+  <section id="result" class="card estimate hidden" aria-live="polite">
+    <h2>Your preliminary estimate</h2><div id="price" class="price"></div><p id="summary"></p>
+    <p class="small">This is an automated preliminary range, not a binding quote. Final pricing may change after photo review or an on-site assessment, especially for excessive clutter, biohazards, construction debris, or conditions not disclosed.</p>
+    <div class="actions"><button id="copyBtn" class="primary" type="button">Copy request</button><button id="emailBtn" class="secondary" type="button">Email Clean & Cut</button></div>
+    <div id="copyNotice" class="notice hidden" style="margin-top:12px">Copied. Paste it into a text, email, Facebook message, or your CRM.</div>
+  </section>
+</main>
+<footer>Clean & Cut Contracting LLC · Northern Colorado</footer>
+<script>
+const PRICING={base:75,bed:35,bath:45,sqft:.08,mult:{standard:1,deep:1.35,moveout:1.25,weekly:.90,biweekly:.95,monthly:1},condition:{light:0,normal:35,heavy:85},addons:{fridge:35,oven:45,windows:55,baseboards:40,pets:35}};
+let lastText='';
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
+function calculate(){
+ const service=document.getElementById('service').value, sqft=+document.getElementById('sqft').value||0,beds=+document.getElementById('beds').value||0,baths=+document.getElementById('baths').value||0,condition=document.getElementById('condition').value;
+ const checked=[...document.querySelectorAll('.check input:checked')].map(x=>x.value); let subtotal=PRICING.base+beds*PRICING.bed+baths*PRICING.bath+sqft*PRICING.sqft+PRICING.condition[condition]; checked.forEach(a=>subtotal+=PRICING.addons[a]);
+ const midpoint=subtotal*PRICING.mult[service], low=Math.max(75,Math.round(midpoint*.9/5)*5), high=Math.round(midpoint*1.12/5)*5;
+ const serviceName=document.getElementById('service').selectedOptions[0].text, city=document.getElementById('city').value;
+ const name=document.getElementById('name').value.trim(),phone=document.getElementById('phone').value.trim(),email=document.getElementById('email').value.trim(),notes=document.getElementById('notes').value.trim();
+ document.getElementById('price').textContent=`${money(low)}–${money(high)}`; document.getElementById('summary').textContent=`${serviceName} · ${sqft.toLocaleString()} sq. ft. · ${beds} bed · ${baths} bath · ${city}`;
+ lastText=`NEW QUOTE REQUEST — Clean & Cut Contracting\nName: ${name}\nPhone: ${phone}\nEmail: ${email||'Not provided'}\nCity: ${city}\nService: ${serviceName}\nProperty: ${sqft} sq ft, ${beds} bed, ${baths} bath\nCondition: ${document.getElementById('condition').selectedOptions[0].text}\nAdd-ons: ${checked.length?checked.join(', '):'None'}\nPreliminary estimate: ${money(low)}–${money(high)}\nNotes: ${notes||'None'}`;
+ document.getElementById('result').classList.remove('hidden');document.getElementById('result').scrollIntoView({behavior:'smooth'});
+}
+document.getElementById('quoteForm').addEventListener('submit',e=>{e.preventDefault();calculate()});
+document.getElementById('resetBtn').onclick=()=>{document.getElementById('quoteForm').reset();document.getElementById('result').classList.add('hidden');document.getElementById('photoPreview').innerHTML=''};
+document.getElementById('copyBtn').onclick=async()=>{await navigator.clipboard.writeText(lastText);document.getElementById('copyNotice').classList.remove('hidden');setTimeout(()=>document.getElementById('copyNotice').classList.add('hidden'),2500)};
+document.getElementById('emailBtn').onclick=()=>{const BUSINESS_EMAIL='bguajardo@cleancutcontractingco.com';location.href=`mailto:${BUSINESS_EMAIL}?subject=${encodeURIComponent('New cleaning quote request')}&body=${encodeURIComponent(lastText)}`};
+document.getElementById('photos').addEventListener('change',e=>{const box=document.getElementById('photoPreview');box.innerHTML='';[...e.target.files].slice(0,8).forEach(f=>{const img=document.createElement('img');img.src=URL.createObjectURL(f);img.alt='Uploaded property photo';box.appendChild(img)})});
+</script>
+</body></html>
