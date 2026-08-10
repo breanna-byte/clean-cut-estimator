@@ -30,57 +30,6 @@
     await prevSaveSettings();
   };
 
-  function confidenceFor(q){
-    let score=42;
-    if(q.sqft>=500) score+=8;
-    if(q.baths>=1) score+=4;
-    if(q.condition) score+=6;
-    if(q.photoCount>=3) score+=10;
-    if(q.photoCount>=6) score+=6;
-    if((q.notes||'').length>=20) score+=4;
-    if(q.learningCount>=3) score+=8;
-    if(q.learningCount>=8) score+=6;
-    const spread=(q.highH-q.lowH)/Math.max(.5,q.predictedMid||1);
-    if(spread<.35) score+=5;
-    if(spread>.7) score-=8;
-    score=Math.max(25,Math.min(96,Math.round(score)));
-    const level=score>=80?'High':score>=60?'Moderate':'Low';
-    return{score,level};
-  }
-
-  function ensureConfidenceStat(){
-    const grid=el('quoteResult')?.querySelector('.resultGrid');
-    if(!grid||el('confidenceScore'))return;
-    const stat=document.createElement('div');
-    stat.className='stat';
-    stat.innerHTML='<small>Estimate confidence</small><strong id="confidenceScore">—</strong>';
-    grid.appendChild(stat);
-  }
-  ensureConfidenceStat();
-
-  el('calcBtn').addEventListener('click',()=>setTimeout(()=>{
-    if(!currentQuote)return;
-    const c=confidenceFor(currentQuote);
-    currentQuote.confidence=c.score;
-    currentQuote.confidenceLevel=c.level;
-    const out=el('confidenceScore');
-    if(out){out.textContent=`${c.score}% · ${c.level}`;out.className=c.level==='High'?'confidence-high':c.level==='Moderate'?'confidence-mid':'confidence-low'}
-  },0));
-
-  const prevViewQuote=viewQuote;
-  viewQuote=function(id){
-    prevViewQuote(id);
-    const q=db.quotes.find(x=>x.id===id);
-    if(!q)return;
-    const c=q.confidence?{score:q.confidence,level:q.confidenceLevel||'Moderate'}:confidenceFor(q);
-    const body=el('modalBody');
-    const info=document.createElement('div');
-    info.className='notice';
-    info.style.marginBottom='16px';
-    info.innerHTML=`<b>Estimate confidence:</b> ${c.score}% · ${esc(c.level)}<br><span class="hint">Based on property detail, submitted photos, estimate spread, and completed training jobs.</span>`;
-    body.prepend(info);
-  };
-
   function timerElapsed(j){
     let ms=Number(j.timerElapsedMs)||0;
     if(j.timerRunning&&j.timerStartedAt) ms+=Date.now()-new Date(j.timerStartedAt).getTime();
@@ -104,7 +53,7 @@
 
     const training=document.createElement('div');
     training.className='settingsGroup';
-    training.innerHTML=`<h3>Estimate review</h3><div class="grid3"><div class="field"><label>How accurate was the estimate?</label><select id="jAccuracy"><option value="" ${!j.accuracy?'selected':''}>Not reviewed</option><option value="too low" ${j.accuracy==='too low'?'selected':''}>Too low</option><option value="accurate" ${j.accuracy==='accurate'?'selected':''}>Accurate</option><option value="too high" ${j.accuracy==='too high'?'selected':''}>Too high</option></select></div><div class="field"><label>Property state</label><select id="jOccupancy"><option value="occupied" ${j.occupancy==='occupied'?'selected':''}>Occupied</option><option value="vacant" ${j.occupancy==='vacant'?'selected':''}>Vacant</option><option value="unknown" ${!j.occupancy||j.occupancy==='unknown'?'selected':''}>Unknown</option></select></div><div class="field"><label>Unexpected issue?</label><select id="jUnexpected"><option value="no" ${j.unexpectedIssue!=='yes'?'selected':''}>No</option><option value="yes" ${j.unexpectedIssue==='yes'?'selected':''}>Yes</option></select></div><div class="field full"><label>What affected the time?</label><textarea id="jTrainingNotes" rows="3" placeholder="Grease, hard water, pet hair, clutter, extra trash, client-added work, etc.">${esc(j.trainingNotes||'')}</textarea></div></div>`;
+    training.innerHTML=`<h3>Job details for estimator training</h3><div class="grid"><div class="field"><label>Property state</label><select id="jOccupancy"><option value="occupied" ${j.occupancy==='occupied'?'selected':''}>Occupied</option><option value="vacant" ${j.occupancy==='vacant'?'selected':''}>Vacant</option><option value="unknown" ${!j.occupancy||j.occupancy==='unknown'?'selected':''}>Unknown</option></select></div><div class="field"><label>Unexpected issue?</label><select id="jUnexpected"><option value="no" ${j.unexpectedIssue!=='yes'?'selected':''}>No</option><option value="yes" ${j.unexpectedIssue==='yes'?'selected':''}>Yes</option></select></div><div class="field full"><label>What affected the time?</label><textarea id="jTrainingNotes" rows="3" placeholder="Grease, hard water, pet hair, clutter, extra trash, client-added work, etc.">${esc(j.trainingNotes||'')}</textarea></div></div>`;
     body.insertBefore(training,body.querySelector('.actions'));
 
     let timerInterval;
@@ -115,7 +64,7 @@
     el('timerFinish').addEventListener('click',()=>{j.timerElapsedMs=timerElapsed(j);j.timerRunning=false;j.timerStartedAt=null;clearInterval(timerInterval);const clock=j.timerElapsedMs/3600000;el('jClockHours').value=clock.toFixed(2);const crew=+el('jCrew').value||1;el('jActualLabor').value=(clock*crew).toFixed(2);refresh();alert('Timer stopped and actual hours filled in. Click Save Job to keep the record.')});
 
     const saveBtn=el('saveJobBtn');
-    saveBtn.addEventListener('click',()=>{j.accuracy=el('jAccuracy')?.value||'';j.occupancy=el('jOccupancy')?.value||'unknown';j.unexpectedIssue=el('jUnexpected')?.value||'no';j.trainingNotes=el('jTrainingNotes')?.value||'';save()},{capture:true});
+    saveBtn.addEventListener('click',()=>{j.occupancy=el('jOccupancy')?.value||'unknown';j.unexpectedIssue=el('jUnexpected')?.value||'no';j.trainingNotes=el('jTrainingNotes')?.value||'';save()},{capture:true});
   };
 
   const prevRenderCustomers=renderCustomers;
