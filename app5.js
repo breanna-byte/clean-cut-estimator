@@ -12,20 +12,19 @@ async function initCloud(){
     await loadScript('cloud.js');
     if(!window.CCCloud?.configured)return;
 
-    // Always load the public estimator settings, even for anonymous customers.
-    // This keeps hourly rates and estimating rules consistent across devices.
     db=merge(clone(DEFAULTS),await CCCloud.loadDb(db));
     save();
     renderChoices();
+    if(window.CCApplyTheme)window.CCApplyTheme();
 
-    const cloudNote=document.createElement('div');cloudNote.id='cloudStatus';cloudNote.className='notice';cloudNote.style.margin='0 0 16px';cloudNote.textContent='Cloud connected. Sign in below to sync business data across devices.';el('loginBox').prepend(cloudNote);
+    const cloudNote=document.createElement('div');cloudNote.id='cloudStatus';cloudNote.className='notice';cloudNote.style.margin='0 0 16px';cloudNote.textContent='Cloud connected. Sign in below to publish business settings and sync data across devices.';el('loginBox').prepend(cloudNote);
     const cloudFields=document.createElement('div');cloudFields.innerHTML=`<div class="grid"><div class="field"><label>Cloud email</label><input id="cloudEmail" type="email" autocomplete="username"></div><div class="field"><label>Cloud password</label><input id="cloudPassword" type="password" autocomplete="current-password"></div></div><div class="actions"><button type="button" id="cloudLoginBtn" class="btn dark">Cloud Sign In</button></div>`;el('loginBox').insertBefore(cloudFields,el('loginBox').querySelector('.hint'));
-    el('cloudLoginBtn').addEventListener('click',async()=>{const email=el('cloudEmail').value.trim(),password=el('cloudPassword').value;if(!email||!password){alert('Enter your Supabase owner email and password.');return}const {error}=await CCCloud.client.auth.signInWithPassword({email,password});if(error){alert(error.message);return}db=merge(clone(DEFAULTS),await CCCloud.loadDb(db));save();renderChoices();sessionStorage.setItem('cc_auth','1');openDashboard();el('cloudStatus').textContent='Cloud signed in and synced.'});
+    el('cloudLoginBtn').addEventListener('click',async()=>{const email=el('cloudEmail').value.trim(),password=el('cloudPassword').value;if(!email||!password){alert('Enter your Supabase owner email and password.');return}const {error}=await CCCloud.client.auth.signInWithPassword({email,password});if(error){alert(error.message);return}db=merge(clone(DEFAULTS),await CCCloud.loadDb(db));save();renderChoices();if(window.CCApplyTheme)window.CCApplyTheme();sessionStorage.setItem('cc_auth','1');openDashboard();el('cloudStatus').textContent='Cloud signed in and synced.'});
 
     const {data:{session}}=await CCCloud.client.auth.getSession();
-    if(session){db=merge(clone(DEFAULTS),await CCCloud.loadDb(db));save();renderChoices();}
+    if(session){db=merge(clone(DEFAULTS),await CCCloud.loadDb(db));save();renderChoices();if(window.CCApplyTheme)window.CCApplyTheme();}
 
-    setInterval(()=>CCCloud.syncDb(db).catch(console.warn),5000);
+    setInterval(()=>CCCloud.syncDb(db).catch(()=>{}),5000);
     el('saveRequest').addEventListener('click',async()=>{if(!currentQuote)return;try{const result=await CCCloud.submitQuote(currentQuote,el('qPhotoInput').files);if(result.ok){currentQuote.cloudPhotos=result.paths||[];el('saveMessage').textContent='Quote submitted to Clean & Cut successfully.';el('saveMessage').classList.remove('hidden')}}catch(e){console.error(e);el('saveMessage').textContent='The quote saved on this device, but cloud submission failed. Please email the request too.';el('saveMessage').classList.remove('hidden')}});
   }catch(e){console.warn('Cloud module did not load. Local mode remains available.',e)}
 }
