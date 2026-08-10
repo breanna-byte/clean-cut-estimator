@@ -11,14 +11,14 @@
       email:settings.email,
       website:settings.website,
       cleaningPage:settings.cleaningPage,
+      accentColor:settings.accentColor,
+      accentLight:settings.accentLight,
       minimumHours:settings.minimumHours,
       lowBuffer:settings.lowBuffer,
       highBuffer:settings.highBuffer,
       maxLearningAdjustment:settings.maxLearningAdjustment,
       learningEnabled:settings.learningEnabled,
       minimumTrainingJobs:settings.minimumTrainingJobs,
-      crew2At:settings.crew2At,
-      crew3At:settings.crew3At,
       disclaimer:settings.disclaimer,
       rates:settings.rates,
       hourFactors:settings.hourFactors,
@@ -32,36 +32,34 @@
     if(!configured||!rows?.length)return;
     const payload=rows.map(x=>({id:x.id,payload:x,updated_at:new Date().toISOString()}));
     const {error}=await client.from(table).upsert(payload,{onConflict:'id'});
-    if(error)console.error('Cloud sync',table,error);
+    if(error)throw error;
   }
 
   async function syncDb(db){
-    if(!configured)return;
-    const {data:{session}}=await client.auth.getSession();
-    if(!session)return;
-    await Promise.all([
+    if(!configured)throw new Error('Cloud is not configured.');
+    const {data:{session},error:sessionError}=await client.auth.getSession();
+    if(sessionError)throw sessionError;
+    if(!session)throw new Error('Cloud sign-in required.');
+    const results=await Promise.all([
       upsertTable('quotes',db.quotes),
       upsertTable('jobs',db.jobs),
       upsertTable('customers',db.customers),
       client.from('settings').upsert({id:'clean-cut',payload:db.settings,updated_at:new Date().toISOString()},{onConflict:'id'}),
       client.from('public_estimator_settings').upsert({id:'clean-cut',payload:publicEstimatorSettings(db.settings),updated_at:new Date().toISOString()},{onConflict:'id'})
     ]);
+    const settingsError=results[3]?.error||results[4]?.error;
+    if(settingsError)throw settingsError;
+    return true;
   }
 
   async function loadDb(localDb){
     if(!configured)return localDb;
-
-    // Public estimator settings are readable by customers so every device uses
-    // the owner's current rates and formula. Sensitive settings such as the PIN
-    // never live in this public record.
     const pub=await client.from('public_estimator_settings').select('payload').eq('id','clean-cut').maybeSingle();
     if(!pub.error&&pub.data?.payload){
       localDb.settings=Object.assign(localDb.settings,pub.data.payload);
     }
-
     const {data:{session}}=await client.auth.getSession();
     if(!session)return localDb;
-
     const [q,j,c,s]=await Promise.all([
       client.from('quotes').select('payload'),
       client.from('jobs').select('payload'),
